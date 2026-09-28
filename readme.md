@@ -182,6 +182,140 @@ The code expects them at:
 The program specifically checks that the `elephant` class exists in `coco.names`.
 
 ---
+## 🤖 YOLOv4 Model Download
+
+This project uses the **YOLOv4 object detection model trained on the COCO dataset**.
+
+You need the following three files:
+
+| File             | Purpose                          |
+| ---------------- | -------------------------------- |
+| `yolov4.cfg`     | YOLOv4 network configuration     |
+| `yolov4.weights` | Pre-trained YOLOv4 model weights |
+| `coco.names`     | COCO object class names          |
+
+### 🔗 Download Links
+
+**YOLOv4 official Darknet repository:**
+
+[YOLOv4 Darknet GitHub Repository](https://github.com/AlexeyAB/darknet?utm_source=chatgpt.com)
+
+### 1. Download `yolov4.cfg`
+
+[Download yolov4.cfg](https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg?utm_source=chatgpt.com)
+
+### 2. Download `yolov4.weights`
+
+[Download yolov4.weights (~245 MB)](https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights?utm_source=chatgpt.com)
+
+> **Note:** The weights file is approximately **245 MB**, so the download may take some time on a Raspberry Pi.
+
+### 3. Download `coco.names`
+
+[Download coco.names](https://raw.githubusercontent.com/AlexeyAB/darknet/master/data/coco.names?utm_source=chatgpt.com)
+
+---
+
+## 📥 Download Directly on Raspberry Pi 5
+
+Open a terminal and run:
+
+```bash
+cd /home/pi/Downloads
+
+wget https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg
+
+wget https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
+
+wget https://raw.githubusercontent.com/AlexeyAB/darknet/master/data/coco.names
+```
+
+After downloading, verify the files:
+
+```bash
+ls -lh /home/pi/Downloads/yolov4.cfg
+ls -lh /home/pi/Downloads/yolov4.weights
+ls -lh /home/pi/Downloads/coco.names
+```
+
+You should have:
+
+```text
+/home/pi/Downloads/
+├── yolov4.cfg
+├── yolov4.weights
+└── coco.names
+```
+
+---
+
+## 🐘 Verify the Elephant Class
+
+The `coco.names` file contains the COCO object classes, including:
+
+```text
+elephant
+```
+
+You can verify it with:
+
+```bash
+grep -n "^elephant$" /home/pi/Downloads/coco.names
+```
+
+If the command returns a line containing `elephant`, the class file is correctly installed.
+
+---
+
+## 🔧 Model Paths Used by This Project
+
+The Python program expects the files at:
+
+```python
+model_cfg = "/home/pi/Downloads/yolov4.cfg"
+model_weights = "/home/pi/Downloads/yolov4.weights"
+class_names = "/home/pi/Downloads/coco.names"
+```
+
+Therefore, **do not rename the files** unless you also update these paths in the Python program.
+
+---
+
+## ⚡ YOLOv4 Configuration Used
+
+The Python program uses:
+
+```python
+input_size = 416
+```
+
+The OpenCV DNN backend performs inference on the Raspberry Pi CPU:
+
+```python
+net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+```
+
+The detection confidence threshold is:
+
+```python
+confidence > 0.4
+```
+
+Non-Maximum Suppression uses:
+
+```python
+NMSBoxes(boxes, confidences, 0.4, 0.5)
+```
+
+The system specifically checks for:
+
+```text
+elephant
+```
+
+When an elephant is detected, the Raspberry Pi triggers the bee-sound playback and GPIO alert mechanism.
+---
 
 # 🐘 Elephant Detection
 
